@@ -77,40 +77,46 @@ const ProductDetail = () => {
       {loading ? (
         <div className="p-6 text-center text-gray-500">Loading...</div>
       ) : (
-        <div className="p-6">
-          <div className="flex flex-row gap-8">
-            <div className="flex flex-col w-[40%]">
+        <div className="p-4 md:p-6">
+          <div className="flex flex-col md:flex-row gap-4 md:gap-8">
+            <div className="w-full md:w-[40%]">
               <img
                 src={product?.images[0]}
                 alt={product?.title}
                 className="w-full h-64 object-cover rounded-md mb-4"
               />
             </div>
-            <div className="flex flex-col w-[100%]">
-              <h1 className="text-2xl font-semibold mb-4">{product?.title}</h1>
-              <p className="text-gray-600">{product?.description}</p>
-              <p className="text-xl font-semibold mt-4">${product?.price}</p>
-              <p className="text-gray-500 mt-2">
+            <div className="w-full">
+              <h1 className="text-xl md:text-2xl font-semibold mb-3">
+                {product?.title}
+              </h1>
+              <p className="text-gray-600 text-sm md:text-base">
+                {product?.description}
+              </p>
+              <p className="text-lg md:text-xl font-semibold mt-3 md:mt-4">
+                ${product?.price}
+              </p>
+              <p className="text-gray-500 text-sm mt-2">
                 Category: {product?.category.name}
               </p>
-              <div className="flex items-center">
+              <div className="flex items-center mt-3">
                 <button
                   onClick={decrement}
-                  className="px-2 py-1 bg-gray-300 rounded"
+                  className="px-3 py-1 bg-gray-300 rounded"
                 >
                   -
                 </button>
-                <span className="mx-2">{quantity}</span>
+                <span className="mx-4">{quantity}</span>
                 <button
                   onClick={increment}
-                  className="px-2 py-1 bg-gray-300 rounded"
+                  className="px-3 py-1 bg-gray-300 rounded"
                 >
                   +
                 </button>
               </div>
               <button
                 onClick={handleAddToCart}
-                className="mt-4 bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900 transition"
+                className="w-full md:w-auto mt-4 bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900 transition"
               >
                 {isAuthenticated ? "Add to Cart" : "Login to Add to Cart"}
               </button>
