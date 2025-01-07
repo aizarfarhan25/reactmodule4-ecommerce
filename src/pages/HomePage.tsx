@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import CategoryFilter from "../components/CategoryFilter";
 import ProductList from "../components/ProductList";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-
 
 interface Product {
   id: number;
@@ -14,7 +13,6 @@ interface Product {
   images: string[];
   category: { id: number; name: string }; // No 'image' property in the category object
 }
-
 
 interface Category {
   id: number;
@@ -41,8 +39,8 @@ const HomePage = () => {
         "https://api.escuelajs.co/api/v1/products"
       );
       setProducts(response.data);
-      setFilteredProducts(response.data); 
-      setLoading(false); 
+      setFilteredProducts(response.data);
+      setLoading(false);
     };
 
     fetchCategories();
@@ -71,15 +69,21 @@ const HomePage = () => {
           <div className="w-full lg:w-1/4 p-4">
             <div className="bg-gray-300 h-12 mb-4 animate-pulse"></div>
             {[...Array(5)].map((_, index) => (
-              <div key={index} className="bg-gray-300 h-8 mb-4 animate-pulse"></div>
+              <div
+                key={index}
+                className="bg-gray-300 h-8 mb-4 animate-pulse"
+              ></div>
             ))}
           </div>
-          
+
           {/* grid produk */}
           <div className="w-full lg:w-3/4 p-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, index) => (
-                <div key={index} className="bg-gray-300 h-64 animate-pulse rounded-md"></div>
+                <div
+                  key={index}
+                  className="bg-gray-300 h-64 animate-pulse rounded-md"
+                ></div>
               ))}
             </div>
           </div>

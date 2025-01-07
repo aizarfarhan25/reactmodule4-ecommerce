@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
 import { Link } from "react-router-dom";
 import { CiShoppingCart } from "react-icons/ci";
@@ -13,7 +13,10 @@ const CartIcon = () => {
     if (savedCart) {
       // Jika ada cart di localStorage, hitung jumlah item
       const cartItems = JSON.parse(savedCart);
-      const totalItems = cartItems.reduce((sum: number, item: any) => sum + item.quantity, 0);
+      const totalItems = cartItems.reduce(
+        (sum: number, item: any) => sum + item.quantity,
+        0
+      );
       setItemCount(totalItems);
     } else {
       // Jika tidak ada cart, set itemCount ke 0
