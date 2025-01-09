@@ -19,7 +19,7 @@ const CategoryFilter: React.FC<Props> = ({
 }) => {
   // List categories
   const allowedCategories = [
-    "electronics",
+    "electronic",
     "furniture",
     "shoes",
     "miscellaneous",
