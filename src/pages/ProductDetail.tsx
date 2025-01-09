@@ -6,6 +6,7 @@ import Header from "../components/Header";
 import { useCart } from "../context/CartContext";
 import { CartItem } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
+import { toast } from "react-toastify";
 
 interface Product {
   id: number;
@@ -69,6 +70,13 @@ const ProductDetail = () => {
       };
       addToCart(cartItem, quantity);
     }
+    toast.success("Product successfully added to cart!", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+    });
   };
 
   return (

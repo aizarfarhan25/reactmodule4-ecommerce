@@ -2,6 +2,7 @@ import React from "react";
 import { MdOutlineShoppingCartCheckout } from "react-icons/md";
 import { useCart } from "../context/CartContext";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 interface Product {
   id: number;
@@ -37,6 +38,13 @@ const ProductList: React.FC<Props> = ({ products }) => {
         price: product.price,
         image: product.images[0],
         quantity: 1,
+      });
+      toast.success("Product successfully added to cart!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
       });
     }
   };

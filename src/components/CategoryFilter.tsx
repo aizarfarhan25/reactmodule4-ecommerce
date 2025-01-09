@@ -29,15 +29,20 @@ const CategoryFilter: React.FC<Props> = ({
   // memperbaiki tulisan category
   const cleanCategoryName = (name: string) => {
     return name
+      .trim()
       .replace(/clothessss/i, "clothes")
       .replace(/clothess/i, "clothes") // Menangani variasi lain
       .replace(/otherMistakes/i, "correctName"); // Tambahkan lebih banyak jika perlu
   };
 
   // list category
-  const filteredCategories = categories.filter(
-    (category) => allowedCategories.includes(category.name.toLowerCase()) // Case insensitive match
-  );
+  const filteredCategories = categories.filter((category) => {
+    const normalizedCategoryName = category.name.toLowerCase().trim();
+    console.log(
+      `Checking category: "${category.name}" -> "${normalizedCategoryName}"`
+    );
+    return allowedCategories.includes(normalizedCategoryName);
+  });
 
   // untuk mobile sidebar
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
