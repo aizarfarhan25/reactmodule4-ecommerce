@@ -41,18 +41,19 @@ const signUpService = {
     }
   },
 
+  // bagian validasi password
   validatePassword(password: string): string | null {
-    // Check minimum length
+    // untuk cek minimal 9 karakter
     if (password.length < 8) {
       return "Password must be at least 8 characters long";
     }
 
-    // Check for uppercase letter
+    // untuk cek minimal ada 1 huruf besar / capital
     if (!/[A-Z]/.test(password)) {
       return "Password must contain at least one uppercase letter";
     }
 
-    // Check for number
+    // untuk cek minimal ada 1 angka
     if (!/[0-9]/.test(password)) {
       return "Password must contain at least one number";
     }
@@ -60,17 +61,18 @@ const signUpService = {
     return null;
   },
 
+  // bagian validasi semua field harus diisi
   validateInputs(name: string, email: string, password: string): string | null {
     if (!name || !email || !password) {
       return "All fields are required";
     }
 
-    // Validate email format
+    // untuk validasi email sudah sesuai format atau tidak
     if (!email.includes("@")) {
       return "Please enter a valid email address";
     }
 
-    // Password validation
+    // untuk validasi password
     const passwordError = this.validatePassword(password);
     if (passwordError) {
       return passwordError;
@@ -92,7 +94,6 @@ const SignUpPage = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate inputs
     const validationError = signUpService.validateInputs(name, email, password);
     if (validationError) {
       setError(validationError);
@@ -103,18 +104,15 @@ const SignUpPage = () => {
     setLoading(true);
 
     try {
-      // Prepare user data
       const userData: SignUpData = {
         name,
         email,
         password,
         avatar: "https://picsum.photos/800",
       };
-
-      // Register user
       await signUpService.registerUser(userData);
 
-      // Show success message and redirect
+      // menampilkan success message and redirect ke halaman login jika berhasil signup
       setSuccess("Account created successfully! Redirecting to login...");
       setTimeout(() => {
         navigate("/login");
