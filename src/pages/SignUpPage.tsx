@@ -2,54 +2,129 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import axios from "../utils/axioxInstance";
+
+// Define types for signup data
+interface SignUpData {
+  name: string;
+  email: string;
+  password: string;
+  avatar: string;
+}
+
+// Create signup service
+const signUpService = {
+  async registerUser(userData: SignUpData) {
+    try {
+      const response = await axios.post("/users/", userData);
+      return response.data;
+    } catch (error: any) {
+      if (error.response) {
+        switch (error.response.status) {
+          case 400:
+            throw new Error(
+              "Invalid data provided. Please check your information"
+            );
+          case 409:
+            throw new Error("Email is already registered");
+          case 422:
+            throw new Error("Please provide valid email and password");
+          case 500:
+            throw new Error("Server error. Please try again in a moment");
+          default:
+            throw new Error(
+              "Registration failed. Please check your connection and try again"
+            );
+        }
+      }
+      throw new Error("Unable to complete registration. Please try again");
+    }
+  },
+
+  validatePassword(password: string): string | null {
+    // Check minimum length
+    if (password.length < 8) {
+      return "Password must be at least 8 characters long";
+    }
+
+    // Check for uppercase letter
+    if (!/[A-Z]/.test(password)) {
+      return "Password must contain at least one uppercase letter";
+    }
+
+    // Check for number
+    if (!/[0-9]/.test(password)) {
+      return "Password must contain at least one number";
+    }
+
+    return null;
+  },
+
+  validateInputs(name: string, email: string, password: string): string | null {
+    if (!name || !email || !password) {
+      return "All fields are required";
+    }
+
+    // Validate email format
+    if (!email.includes("@")) {
+      return "Please enter a valid email address";
+    }
+
+    // Password validation
+    const passwordError = this.validatePassword(password);
+    if (passwordError) {
+      return passwordError;
+    }
+
+    return null;
+  },
+};
 
 const SignUpPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false); 
-  const [error, setError] = useState(""); 
-  const [success, setSuccess] = useState(""); 
-  const navigate = useNavigate(); 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const navigate = useNavigate();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-  
-    // Validasi form
-    if (!name || !email || !password) {
-      setError("All fields are required.");
+
+    // Validate inputs
+    const validationError = signUpService.validateInputs(name, email, password);
+    if (validationError) {
+      setError(validationError);
       return;
     }
-  
-    setError(""); 
-    setLoading(true); 
-  
+
+    setError("");
+    setLoading(true);
+
     try {
-      const response = await fetch("https://api.escuelajs.co/api/v1/users/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-          avatar: "https://picsum.photos/800",
-        }),
-      });
-  
-      if (!response.ok) {
-        throw new Error("Failed to create account");
-      }
-  
-      setSuccess("Account created successfully!"); 
-      setTimeout(() => navigate("/login"), 2000);
-    } catch (error) {
-      console.error("Sign up failed:", error);
-      setError("Sign up failed. Please try again.");
+      // Prepare user data
+      const userData: SignUpData = {
+        name,
+        email,
+        password,
+        avatar: "https://picsum.photos/800",
+      };
+
+      // Register user
+      await signUpService.registerUser(userData);
+
+      // Show success message and redirect
+      setSuccess("Account created successfully! Redirecting to login...");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } catch (error: any) {
+      setError(error.message);
     } finally {
       setLoading(false);
     }
   };
-  
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -128,7 +203,7 @@ const SignUpPage = () => {
 
           <button
             type="submit"
-            className="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-semibold"
+            className="w-full py-3 bg-gray-950 text-white rounded-lg hover:bg-gray-900 transition font-semibold"
             disabled={loading}
           >
             {loading ? (

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import axios from "../utils/axioxInstance"; 
+import axios from "../utils/axioxInstance";
 import { useNavigate } from "react-router-dom";
 
 interface AuthContextType {
@@ -9,11 +9,13 @@ interface AuthContextType {
   logout: () => void;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true); 
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,12 +24,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     console.log("Token di localStorage:", token); // untuk cek token sudah ada atau belum di localStorage
 
     if (token) {
-      setIsAuthenticated(true); 
+      setIsAuthenticated(true);
     } else {
       setIsAuthenticated(false);
     }
 
-    setIsLoading(false); 
+    setIsLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
@@ -40,12 +42,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         localStorage.setItem("access_token", access_token);
         localStorage.setItem("refresh_token", refresh_token);
         setIsAuthenticated(true);
-        navigate("/"); // redirect ke home setelah login
+        navigate("/");
       } else {
-        console.error("Tokens tidak diterima");
+        throw new Error("Login failed: Invalid login credentials");
       }
-    } catch (error) {
-      console.error("Login gagal", error);
+    } catch (error: any) {
+      if (error.response) {
+        // Handle specific HTTP error codes
+        switch (error.response.status) {
+          case 401:
+            throw new Error("Incorrect email or password");
+          case 404:
+            throw new Error("Account not found");
+          case 429:
+            throw new Error("Too many login attempts. Please try again later");
+          case 500:
+            throw new Error("Server error. Please try again in a moment");
+          default:
+            throw new Error(
+              "Login failed: Please check your internet connection and try again"
+            );
+        }
+      }
+      throw new Error("Login failed: An error occurred. Please try again");
     }
   };
 
@@ -57,7 +76,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setIsAuthenticated(false);
     navigate("/login");
   };
-  
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout }}>

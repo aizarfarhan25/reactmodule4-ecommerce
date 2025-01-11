@@ -27,12 +27,14 @@ const LoginPage = () => {
     try {
       await login(email, password);
       console.log("Login successful");
-
-      // redirect ke home kalau berhasil login
-      navigate("/");
-    } catch (error) {
-      console.error("Login failed");
-      setError("Login failed. Please try again.");
+      navigate("/"); // Hanya navigate ke home ketika login berhasil
+    } catch (error: any) {
+      console.error("Login failed:", error);
+      setError(
+        error.message ||
+          "Login failed. Please check your credentials and try again."
+      );
+      // Di sini tidak ada navigate(), jadi user tetap di halaman login
     } finally {
       setLoading(false);
     }
@@ -96,7 +98,7 @@ const LoginPage = () => {
           {/* Tombol login */}
           <button
             type="submit"
-            className="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-semibold"
+            className="w-full py-3 bg-gray-950 text-white rounded-lg hover:bg-gray-900 transition font-semibold"
             disabled={loading}
           >
             {loading ? (
