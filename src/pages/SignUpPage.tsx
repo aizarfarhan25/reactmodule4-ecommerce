@@ -43,7 +43,7 @@ const signUpService = {
 
   // bagian validasi password
   validatePassword(password: string): string | null {
-    // untuk cek minimal 9 karakter
+    // untuk cek minimal 8 karakter
     if (password.length < 8) {
       return "Password must be at least 8 characters long";
     }
